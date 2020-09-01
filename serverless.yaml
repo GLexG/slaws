@@ -7,17 +7,6 @@ custom:
     includeModules: true
   tableName: WebsocketUsers
 
-#  serverless-iam-roles-per-function:
-#    defaultInherit: true # Each function will inherit the service level roles too.
-#  globalTables:
-#    regions: # list of regions in which you want to set up global tables
-#      - us-east-2 # Ohio (default region to date for stack)
-#      - ap-southeast-2 # Sydney (lower latency for Australia)
-#    createStack: true
-#  prune:
-#    automatic: true
-#    number: 3
-
 plugins:
   - serverless-webpack
 #  - serverless-offline
@@ -68,7 +57,6 @@ functions:
     events:
       - websocket:
           route: $connect
-#  //create new lambda whenever a websocket connects and trigger this lamdba
   websocket-disconect:
     handler: src/websockets/disconnect.handler
     events:
@@ -84,7 +72,7 @@ functions:
     events:
       - websocket:
           route: message
-#          we dont need $ sign here becaouse message is not in build route
+#          we dont need $ sign here because message is not in build route
 
 resources:
   Resources:
