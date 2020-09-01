@@ -1,0 +1,101 @@
+service:
+  name: aws-typescript-api
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+  tableName: WebsocketUsers
+
+#  serverless-iam-roles-per-function:
+#    defaultInherit: true # Each function will inherit the service level roles too.
+#  globalTables:
+#    regions: # list of regions in which you want to set up global tables
+#      - us-east-2 # Ohio (default region to date for stack)
+#      - ap-southeast-2 # Sydney (lower latency for Australia)
+#    createStack: true
+#  prune:
+#    automatic: true
+#    number: 3
+
+plugins:
+  - serverless-webpack
+#  - serverless-offline
+#  - serverless-iam-roles-per-function
+#  - serverless-create-global-dynamodb-table
+#  - serverless-prune-plugin
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  frameworkVersion: ‘>=1.72.0’
+  stage: ${opt:stage, 'local'}
+  region: ${opt:region, 'us-east-2'}
+  apiGateway:
+    minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
+  environment:
+    tableName: ${self:custom.tableName}
+    DEBUG: '*'
+#    NODE_ENV: ${self:provider.stage}
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+  tracing:
+    lambda: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+#        - xray:PutTraceSegments
+#        - xray:PutTelemetryRecords
+        - dynamodb:*
+      Resource: "*"
+
+functions:
+  getCityInfo:
+    handler: src/getCreditCardInfo.handler
+    events:
+      - http:
+          method: get
+          path: get-card/{card}
+          cors: true
+  getOauthToken:
+    handler: src/getOauthToken.handler
+    events:
+      - http:
+          method: get
+          path: get-token
+          cors: true
+  websocket-connect:
+    handler: src/websockets/connect.handler
+    events:
+      - websocket:
+          route: $connect
+#  //create new lambda whenever a websocket connects and trigger this lamdba
+  websocket-disconect:
+    handler: src/websockets/disconnect.handler
+    events:
+      - websocket:
+          route: $disconnect
+  websocket-default:
+    handler: src/websockets/default.handler
+    events:
+      - websocket:
+          route: $default
+  websocket-message:
+    handler: src/websockets/message.handler
+    events:
+      - websocket:
+          route: message
+#          we dont need $ sign here becaouse message is not in build route
+
+resources:
+  Resources:
+    WebsocketUserTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
