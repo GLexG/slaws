@@ -2,9 +2,9 @@ import * as AWS from 'aws-sdk';
 
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
-export const Dynamo = {
+export const dynamo = {
 
-    async get(ID, TableName) {
+    async get(ID: string, TableName: string) {
         const params = {
             TableName,
             Key: {
@@ -22,7 +22,7 @@ export const Dynamo = {
         return data.Item;
     },
 
-    async write(data, TableName) {
+    async write(data: any, TableName: string) {
         if (!data.ID) {
             throw Error('no ID on the data');
         }
@@ -41,7 +41,7 @@ export const Dynamo = {
         return data;
     },
 
-    async delete(ID, TableName) {
+    async delete(ID: string, TableName: string) {
         const params = {
             TableName,
             Key: {

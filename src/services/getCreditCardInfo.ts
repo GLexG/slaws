@@ -1,16 +1,15 @@
-import {APIGatewayProxyHandler} from 'aws-lambda';
-import 'source-map-support/register';
-import {apiResponses} from "./common/API_Responses";
+import {BusinessError} from "@nmg/osp-backend-utils/types";
+import logger from "@nmg/osp-backend-utils/logger";
 
-export const handler: APIGatewayProxyHandler = async (event, _context) => {
+export const getUserCreditCardInfo = async (card: string) : Promise<CardData> => {
 
-    const city = event.pathParameters?.card;//it's optional and it will return null if it doesnt exists
+    if (!card || !cardData[card]) {
 
-    if (!city || !cardData[city]) {
-        return apiResponses._400({message: 'missing card data or no data for that card'})
+        logger.error({ message: 'Invalid request payload.' , data: card});
+        throw new BusinessError(400, 'missing card data or no data for that card.');
     }
 
-    return apiResponses._200(cardData[city]);
+    return cardData[card];
 }
 
 interface CardData {

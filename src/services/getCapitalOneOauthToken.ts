@@ -1,8 +1,7 @@
-import {APIGatewayProxyHandler} from "aws-lambda";
 import axios from 'axios';
 import qs from 'qs';
 
-export const handler: APIGatewayProxyHandler = async (event, _context) => {
+export const getCapitalOneOauthToken = async () => {
 
     const url = "https://api-sandbox.capitalone.com/oauth2/token";
     const data = {

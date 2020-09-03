@@ -1,15 +1,14 @@
-import {apiResponses as Responses} from "../common/API_Responses";
-import {Dynamo} from "../common/Dynamo";
-import {APIGatewayProxyHandler} from "aws-lambda";
+import {dynamo} from "../getCapitalOneOauthToken/dynamo";
+import logger from "@nmg/osp-backend-utils/logger";
 
 const tableName = process.env.tableName;
 
-export const handler: APIGatewayProxyHandler = async (event) => {
-    console.log('event', event);
+export const disconnect = async (connectionId: string) => {
+    // console.log('event', event);
+    logger.info("Deleting connection for connectionId: ")
+    // const { connectionId: connectionID} = event.requestContext;
 
-    const { connectionId: connectionID} = event.requestContext;
+    await dynamo.delete(connectionId, tableName);
 
-    await Dynamo.delete(connectionID, tableName);
-
-    return Responses._200({message: 'disconnected'})
+    return;
 }

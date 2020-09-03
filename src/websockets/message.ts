@@ -1,19 +1,12 @@
-import {apiResponses as Responses} from "../common/API_Responses";
-import {Dynamo} from "../common/Dynamo";
-import {APIGatewayProxyHandler} from "aws-lambda";
-import {send as WebsocketSend} from "../common/websocketMessage";
-// const Websocket = require('./common/websocketMessage');
+import {dynamo} from "../getCapitalOneOauthToken/dynamo";
+import {send as WebsocketSend} from "../getCapitalOneOauthToken/websocketMessage";
+import {BusinessError} from "@nmg/osp-backend-utils/types";
 const tableName = process.env.tableName;
 
-export const handler: APIGatewayProxyHandler = async (event) => {
-    console.log('event', event);
-
-    const {connectionId: connectionID} = event.requestContext;
-
-    const body = JSON.parse(event.body);
+export const message = async (connectionId: string, body: any) => {
 
     try {
-        const record = await Dynamo.get(connectionID, tableName)
+        const record = await dynamo.get(connectionId, tableName)
         const {messages, domainName, stage} = record;
 
         messages.push(body.message);
@@ -23,15 +16,15 @@ export const handler: APIGatewayProxyHandler = async (event) => {
             messages
         };
 
-        await Dynamo.write(data, tableName);
+        await dynamo.write(data, tableName);
 
-        //message is the first message
-        await WebsocketSend({domainName, stage, connectionID, message: "This is a reply to your message"})
+        //Send response to message
+        await WebsocketSend({domainName, stage, connectionId, message: "This is a reply to message"})
 
-        return Responses._200({message: 'received a message'})
+        return;
 
     } catch (error) {
-        return Responses._400({message: 'message could not be received'})
+        throw new BusinessError(500, 'message could not be received');
     }
 
 }

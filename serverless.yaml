@@ -38,42 +38,41 @@ provider:
       Resource: "*"
 
 functions:
+#  TODO: test routes to be cleaned up
   getCityInfo:
-    handler: src/getCreditCardInfo.handler
+    handler: src/handler.getCreditCardInfo
     events:
       - http:
           method: get
           path: get-card/{card}
           cors: true
   getOauthToken:
-    handler: src/getOauthToken.handler
+    handler: src/handler.getOauthToken
     events:
       - http:
           method: get
           path: get-token
           cors: true
   websocket-connect:
-    handler: src/websockets/connect.handler
+    handler: src/handler.connect
     events:
       - websocket:
           route: $connect
   websocket-disconect:
-    handler: src/websockets/disconnect.handler
+    handler: src/handler.disconnect
     events:
       - websocket:
           route: $disconnect
   websocket-default:
-    handler: src/websockets/default.handler
+    handler: src/handler.defaultRoute
     events:
       - websocket:
           route: $default
   websocket-message:
-    handler: src/websockets/message.handler
+    handler:  src/handler.message
     events:
       - websocket:
           route: message
-#          we dont need $ sign here because message is not in build route
-
 resources:
   Resources:
     WebsocketUserTable:

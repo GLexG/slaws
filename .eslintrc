@@ -1,0 +1,72 @@
+{
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "extends": [
+    "airbnb-base",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "max-len": [2, 125],
+    "object-curly-newline": 0,
+    "implicit-arrow-linebreak": 0,
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "ts": "never"
+      }
+    ],
+    "no-throw-literal": 0,
+    "no-console": 0,
+    "import/prefer-default-export": 0,
+    "prefer-promise-reject-errors": 0,
+    "@typescript-eslint/no-inferrable-types": 0,
+    "@typescript-eslint/no-var-requires": 0,
+    "no-else-return": 0,
+    "no-unused-expressions": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/no-use-before-define": 0,
+    "no-return-await": 0,
+    "no-param-reassign": 0,
+    "@typescript-eslint/camelcase": 0,
+    "lines-between-class-members": 0,
+    "no-useless-constructor": 0,
+    "max-classes-per-file": 0,
+    "class-methods-use-this": 0,
+    "no-underscore-dangle": 0
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".ts"]
+      }
+    }
+  },
+  "overrides": [
+    {
+      "files": ["src/_tests_/**/*.{js,ts}"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": 0,
+        "import/first": 0,
+        "import/order": 0,
+        "import/no-extraneous-dependencies": 0
+      }
+    }
+  ]
+}
