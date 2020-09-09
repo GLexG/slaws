@@ -10,6 +10,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 // exports.handler = async event => {
     console.log('event', event);
     console.log('table name: ', tableName)
+    console.log('table name: ', tableName)
+    console.log('table name: ', tableName)
+    console.log('table name: ', tableName)
 
     const { connectionId: connectionID, domainName, stage } = event.requestContext;
 
